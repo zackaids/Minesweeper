@@ -1,0 +1,12 @@
+#top {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+.side-title-nav {
+    display: flex;
+    justify-content: flex-start;
+}
