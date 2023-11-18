@@ -1,6 +1,3 @@
-//  let's make markzynk make a bot for a leaderboard kinda thing thoughts ? 
-
-
 
 // logic
 
@@ -13,13 +10,13 @@ export const TILE_STATUSES = {
 }
 
 
-export function createBoard(boardSize, numberOfMines) {
+export function createBoard(boardWidth, boardHeight, numberOfMines) {
     const board = []
-    const minePositions = getMinePositions(boardSize, numberOfMines)
+    const minePositions = getMinePositions(boardWidth, boardHeight, numberOfMines)
 
-    for (let x = 0; x < boardSize; x++) {
+    for (let x = 0; x < boardHeight; x++) {
         const row = []
-        for (let y = 0; y < boardSize; y++) {
+        for (let y = 0; y < boardWidth; y++) {
             const element = document.createElement("div")
             element.dataset.status = TILE_STATUSES.HIDDEN
 
@@ -43,7 +40,6 @@ export function createBoard(boardSize, numberOfMines) {
 }
 
 
-// make sure snubit remembers the question about 24 hr
 
 
 // method to mark tiles
@@ -100,13 +96,13 @@ export function checkLose(board) {
     })
 }
 
-function getMinePositions(boardSize, numberOfMines) {
+function getMinePositions(boardWidth, boardHeight, numberOfMines) {
     const positions = []
 
     while (positions.length < numberOfMines) {
         const position = {
-            x: randomNumber(boardSize),
-            y: randomNumber(boardSize)
+            x: randomNumber(boardHeight),
+            y: randomNumber(boardWidth)
         }
 
         if (!positions.some(positionMatch.bind(null, position))) {

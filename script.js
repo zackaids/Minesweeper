@@ -12,47 +12,57 @@ import {
 
 // -- populate a board with tiles/mines
 // constant variables 
-const BOARD_SIZE = 16
-const NUMBER_OF_MINES = 40
+let boardWidth
+let boardHeight
+let numberOfMines
 
 // 9x9 10 mines
 // 16x16 40 mines
 // 30x16 99 mines 
 
 // calling the variables 
-const board = createBoard(BOARD_SIZE, NUMBER_OF_MINES)
+let board
 const boardElement = document.querySelector('.board')
 const minesLeftText = document.querySelector('[data-mine-count]')
 const messageText = document.querySelector('.subtext')
 
+
 // setting up the board
-board.forEach(row => {
-    row.forEach(tile => {
-        boardElement.append(tile.element)
-        // -- method to left click on tiles
-        tile.element.addEventListener('click', () => {
-            // imported revealTile function for revealing tiles
-            revealTile(board, tile)
-            checkGameEnd()
-        })
-        // -- method to right click on tiles
-        tile.element.addEventListener('contextmenu', e => {
-            e.preventDefault()
-            // imported markTile function for marking tiles
-            markTile(tile)
-            listMinesLeft()
+function renderBoard() {
+    board.forEach(row => {
+        row.forEach(tile => {
+            boardElement.append(tile.element)
+            // -- method to left click on tiles
+            tile.element.addEventListener('click', () => {
+                // imported revealTile function for revealing tiles
+                revealTile(board, tile)
+                checkGameEnd()
+            })
+            // -- method to right click on tiles
+            tile.element.addEventListener('contextmenu', e => {
+                e.preventDefault()
+                // imported markTile function for marking tiles
+                markTile(tile)
+                listMinesLeft()
+            })
         })
     })
-})
-boardElement.style.setProperty('--size', BOARD_SIZE)
-minesLeftText.textContent = NUMBER_OF_MINES
+    boardElement.style.setProperty('--size-width', boardWidth)
+    boardElement.style.setProperty('--size-height', boardHeight)
+    minesLeftText.textContent = numberOfMines
+    boardElement.style.visibility = "visible"
+}
 
+function clearBoard() {
+    boardElement.innerHTML = ""
+    boardElement.style.visibility = "hidden"
+}
 function listMinesLeft() {
     const markedTilesCount = board.reduce((count, row) => {
         return count + row.filter(tile => tile.status === TILE_STATUSES.MARKED).length
     }, 0)
 
-    minesLeftText.textContent = NUMBER_OF_MINES - markedTilesCount
+    minesLeftText.textContent = numberOfMines - markedTilesCount
 }
 
 
@@ -83,3 +93,31 @@ function checkGameEnd() {
 function stopProp(e) {
     e.stopImmediatePropagation()
 }
+
+
+document.getElementById("beginner").addEventListener("click", () => {
+    boardWidth = 9
+    boardHeight = 9
+    numberOfMines = 10
+    board = createBoard(boardWidth, boardHeight, numberOfMines)
+    clearBoard()
+    renderBoard()
+})
+
+document.getElementById("intermediate").addEventListener("click", () => {
+    boardWidth = 16
+    boardHeight = 16
+    numberOfMines = 40
+    board = createBoard(boardWidth, boardHeight, numberOfMines)
+    clearBoard()
+    renderBoard()
+})
+
+document.getElementById("expert").addEventListener("click", () => {
+    boardWidth = 30
+    boardHeight = 16
+    numberOfMines = 99
+    board = createBoard(boardWidth, boardHeight, numberOfMines)
+    clearBoard()
+    renderBoard()
+})

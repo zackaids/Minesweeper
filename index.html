@@ -3,6 +3,7 @@
 
 <head>
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" type="module" defer></script>
 </head>
 
 <body>
@@ -17,10 +18,10 @@
                 <nav id="topnav" class="hover">
                     <section>
                         <a href="/index.html">PLAY</a>
-                        <div role="group">
-                            <a href="/beginner.html">Beginner</a>
-                            <a href="/expert.html">Intermediate</a>
-                            <a href="/intermediate.html">Expert</a>
+                        <div class="difficulty">
+                            <div id="beginner">Beginner</div>
+                            <div id="intermediate">Intermediate</div>
+                            <div id="expert">Expert</div>
                         </div>
                     </section>
 
@@ -30,7 +31,13 @@
             </div>
         </header>
     </div>
-    <script src="minesweeper.js"></script>
+    <div>
+        <div class="title">Minesweeper</div>
+        <div class="subtext">
+            Mines Left: <span data-mine-count></span>
+        </div>
+        <div class="board"></div>
+    </div>
 </body>
 
 </html>

@@ -30,21 +30,21 @@ body {
 }
 
 .subtext {
-    color:#CCC;
-    font-size:1.54rem;
-    margin-bottom:10px;
+    color: #CCC;
+    font-size: 1.54rem;
+    margin-bottom: 10px;
 }
 
 .board {
     display: inline-grid;
     padding: 10px;
-    grid-template-columns: repeat(var(--size), 60px);
-    grid-template-rows: repeat(var(--size), 60px);
+    grid-template-columns: repeat(var(--size-width), 45px);
+    grid-template-rows: repeat(var(--size-height), 45px);
     gap: 4px;
     background-color: #777;
 }
 
-.board > * {
+.board>* {
     width: 100%;
     height: 100%;
     display: flex;
@@ -55,19 +55,19 @@ body {
     user-select: none;
 }
 
-.board > [data-status="hidden"] {
+.board>[data-status="hidden"] {
     background-color: #bbb;
-    cursor:pointer;
+    cursor: pointer;
 }
 
-.board > [data-status="mine"] {
+.board>[data-status="mine"] {
     background-color: red;
 }
 
-.board > [data-status="number"] {
+.board>[data-status="number"] {
     background-color: none;
 }
 
-.board > [data-status="marked"] {
+.board>[data-status="marked"] {
     background-color: yellow;
 }
