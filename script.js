@@ -20,6 +20,13 @@ const gameSettings = {
     }
 }
 
+export const TILE_STATUSES = {
+    HIDDEN: "hidden",
+    MINE: "mine",
+    NUMBER: "number",
+    MARKED: "marked",
+}
+
 const boardElement = document.querySelector('.board')
 const minesLeftText = document.querySelector('[data-mine-count]')
 
@@ -69,23 +76,20 @@ function placeMine(board) {
 
 
 function renderBoard(board, gameSettings) {
-    board.forEach(row => {
-        row.forEach(cell => {
+    board.forEach((row, y) => {
+        row.forEach((cell, x) => {
             const element = document.createElement("div");
+            element.dataset.status = TILE_STATUSES.HIDDEN
+
+            element.addEventListener("click", () => {
+                leftClick(x, y, board);
+            });
+            element.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                rightClick(x, y, board);
+            })
+
             boardElement.append(element)
-            // -- method to left click on tiles
-            // tile.element.addEventListener('click', () => {
-            //     // imported revealTile function for revealing tiles
-            //     revealTile(board, tile)
-            //     checkGameEnd()
-            // })
-            // // -- method to right click on tiles
-            // tile.element.addEventListener('contextmenu', e => {
-            //     e.preventDefault()
-            //     // imported markTile function for marking tiles
-            //     markTile(tile)
-            //     listMinesLeft()
-            // })
         })
     })
     boardElement.style.setProperty('--size-width', gameSettings.gridWidth)
@@ -126,6 +130,35 @@ function calculateAdjacentMines(board) {
     }
 }
 
+function leftClick(x, y, board) {
+    const cell = board[y][x];
+    if (!cell.isRevealed) {
+        cell.isRevealed = true;
+    }
+    if (cell.isRevealed || cell.isFlagged) {
+        return;
+    }
+    if (cell.isMine) {
+        element.dataset.status = TILE_STATUSES.MINE;
+        gameOver();
+    } else if (cell.adjacentMines === 0) {
+        revealAdjacentCells(cell);
+        element.dataset.status = TILE_STATUSES.NUMBER;
+    }
+
+}
+
+function rightClick(x, y, board) {
+    const cell = board[y][x];
+    if (!cell.isFlagged) {
+        cell.isFlagged = true;
+        element.dataset.status = TILE_STATUSES.MARKED;
+    }
+    if (cell.isRevealed) {
+        return;
+    }
+}
+
 
 let { board: newBoard, gameSettings: currentGameSettings } = createBoard(gameSettings.beginner);
 renderBoard(newBoard, currentGameSettings);
@@ -163,5 +196,7 @@ renderBoard(newBoard, currentGameSettings);
 // function to reset game
 
 // better UI
+
+
 
 
