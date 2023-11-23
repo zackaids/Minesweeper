@@ -82,11 +82,11 @@ function renderBoard(board, gameSettings) {
             element.dataset.status = TILE_STATUSES.HIDDEN
 
             element.addEventListener("click", () => {
-                leftClick(x, y, board);
+                revealCell(x, y, board);
             });
             element.addEventListener("contextmenu", (e) => {
                 e.preventDefault();
-                rightClick(x, y, board);
+                markCell(x, y, board);
             })
 
             boardElement.append(element)
@@ -130,34 +130,68 @@ function calculateAdjacentMines(board) {
     }
 }
 
-function leftClick(x, y, board) {
+function markCell(x, y, board) {
     const cell = board[y][x];
-    if (!cell.isRevealed) {
-        cell.isRevealed = true;
-    }
-    if (cell.isRevealed || cell.isFlagged) {
-        return;
-    }
-    if (cell.isMine) {
-        element.dataset.status = TILE_STATUSES.MINE;
-        gameOver();
-    } else if (cell.adjacentMines === 0) {
-        revealAdjacentCells(cell);
-        element.dataset.status = TILE_STATUSES.NUMBER;
-    }
-
-}
-
-function rightClick(x, y, board) {
-    const cell = board[y][x];
-    if (!cell.isFlagged) {
-        cell.isFlagged = true;
-        element.dataset.status = TILE_STATUSES.MARKED;
-    }
     if (cell.isRevealed) {
         return;
     }
+    if (cell.isFlagged) {
+        cell.isFlagged = false;
+    } else {
+        cell.isFlagged = true;
+    }
+    renderBoard(board, currentGameSettings);
 }
+
+function revealCell(x, y, board) {
+    const cell = board[y][x];
+    if (cell.isRevealed || cell.isFlagged) {
+        return;
+    }
+    if (!cell.isRevealed) {
+        cell.isRevealed = true;
+    } else {
+        cell.isRevealed = false;
+    }
+    renderBoard(board, currentGameSettings)
+}
+// function leftClick(x, y, board) {
+//     const cell = board[y][x];
+//     const element = boardElement.children[y * board[0].length + x];
+//     if (!cell.isRevealed) {
+//         cell.isRevealed = true;
+//     }
+//     if (cell.isRevealed || cell.isFlagged) {
+//         return;
+//     }
+//     if (cell.isMine) {
+//         element.dataset.status = TILE_STATUSES.MINE;
+//         gameOver();
+//     } else {
+//         element.dataset.status = TILE_STATUSES.NUMBER;
+//         if (cell.adjacentMines > 0) {
+//             element.textContent = cell.adjacentMines;
+//         } else {
+//             revealAdjacentCells(x, y, board);
+//         }
+
+//     }
+
+// }
+
+// function rightClick(x, y, board) {
+//     const cell = board[y][x];
+//     if (!cell.isFlagged) {
+//         cell.isFlagged = true;
+//         element.dataset.status = TILE_STATUSES.MARKED;
+//     }
+//     if (cell.isRevealed) {
+//         return;
+//     }
+// }
+
+
+
 
 
 let { board: newBoard, gameSettings: currentGameSettings } = createBoard(gameSettings.beginner);
