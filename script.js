@@ -19,13 +19,13 @@ const gameSettings = {
         'maxMines': 99,
     }
 }
-
-export const TILE_STATUSES = {
+const TILE_STATUSES = {
     HIDDEN: "hidden",
     MINE: "mine",
     NUMBER: "number",
-    MARKED: "marked",
+    FLAGGED: "flagged",
 }
+
 
 const boardElement = document.querySelector('.board')
 const minesLeftText = document.querySelector('[data-mine-count]')
@@ -73,20 +73,30 @@ function placeMine(board) {
     }
 }
 
-
+function clearBoard() {
+    while (boardElement.firstChild) {
+        boardElement.removeChild(boardElement.firstChild);
+    }
+}
 
 function renderBoard(board, gameSettings) {
+    clearBoard();
     board.forEach((row, y) => {
         row.forEach((cell, x) => {
             const element = document.createElement("div");
-            element.dataset.status = TILE_STATUSES.HIDDEN
+            element.dataset.status = getStatusFromCell(cell);
+
+
+            if (cell.adjacentMines > 0 && cell.isRevealed) {
+                element.textContent = cell.adjacentMines;
+            }
 
             element.addEventListener("click", () => {
                 revealCell(x, y, board);
             });
             element.addEventListener("contextmenu", (e) => {
                 e.preventDefault();
-                markCell(x, y, board);
+                flagCell(x, y, board);
             })
 
             boardElement.append(element)
@@ -97,6 +107,22 @@ function renderBoard(board, gameSettings) {
 
     minesLeftText.textContent = numberOfMines
     boardElement.style.visibility = "visible"
+}
+
+function getStatusFromCell(cell) {
+    if (cell.isRevealed) {
+        if (cell.isMine) {
+            return TILE_STATUSES.MINE;
+        } else if (cell.adjacentMines >= 0) {
+            return TILE_STATUSES.NUMBER;
+        } else {
+            return TILE_STATUSES.HIDDEN;
+        }
+    } else if (cell.isFlagged) {
+        return TILE_STATUSES.FLAGGED;
+    } else {
+        return TILE_STATUSES.HIDDEN;
+    }
 }
 
 function calculateAdjacentMines(board) {
@@ -130,13 +156,14 @@ function calculateAdjacentMines(board) {
     }
 }
 
-function markCell(x, y, board) {
+function flagCell(x, y, board) {
     const cell = board[y][x];
-    if (cell.isRevealed) {
+    if (cell.isRevealed && cell.isFlagged) {
         return;
     }
     if (cell.isFlagged) {
         cell.isFlagged = false;
+        cell.isHidden = true;
     } else {
         cell.isFlagged = true;
     }
@@ -148,82 +175,47 @@ function revealCell(x, y, board) {
     if (cell.isRevealed || cell.isFlagged) {
         return;
     }
-    if (!cell.isRevealed) {
-        cell.isRevealed = true;
-    } else {
-        cell.isRevealed = false;
+    if (cell.isMine) {
+        return;
     }
+    cell.isRevealed = true;
+
+
+
+    if (cell.adjacentMines === 0) {
+        floodFill(x, y, board)
+    }
+
+
     renderBoard(board, currentGameSettings)
 }
-// function leftClick(x, y, board) {
-//     const cell = board[y][x];
-//     const element = boardElement.children[y * board[0].length + x];
-//     if (!cell.isRevealed) {
-//         cell.isRevealed = true;
-//     }
-//     if (cell.isRevealed || cell.isFlagged) {
-//         return;
-//     }
-//     if (cell.isMine) {
-//         element.dataset.status = TILE_STATUSES.MINE;
-//         gameOver();
-//     } else {
-//         element.dataset.status = TILE_STATUSES.NUMBER;
-//         if (cell.adjacentMines > 0) {
-//             element.textContent = cell.adjacentMines;
-//         } else {
-//             revealAdjacentCells(x, y, board);
-//         }
 
-//     }
+function floodFill(x, y, board) {
+    const height = board.length;
+    const width = board[0].length;
+    for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+            const newY = y + dy;
+            const newX = x + dx;
 
-// }
-
-// function rightClick(x, y, board) {
-//     const cell = board[y][x];
-//     if (!cell.isFlagged) {
-//         cell.isFlagged = true;
-//         element.dataset.status = TILE_STATUSES.MARKED;
-//     }
-//     if (cell.isRevealed) {
-//         return;
-//     }
-// }
-
-
-
+            if (newY >= 0 && newY < height && newX >= 0 && newX < width) {
+                // revealCell(newX, newY, board);
+                const neighbor = board[newY][newX];
+                if (!neighbor.isMine && !neighbor.isRevealed) {
+                    neighbor.isRevealed = true;
+                    if (neighbor.adjacentMines === 0) {
+                        floodFill(newX, newY, board);
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 let { board: newBoard, gameSettings: currentGameSettings } = createBoard(gameSettings.beginner);
 renderBoard(newBoard, currentGameSettings);
 
-// function placeMine2(board) {
-//     const height = board.length;
-//     const width = board[0].length;
-
-//     let randomY;
-//     let randomX;
-
-//     let condition = true
-//     while(condition) {
-//         randomY = Math.floor(Math.random() * height);
-//         randomX = Math.floor(Math.random() * width);
-
-//         if (board[randomY][randomX] != 1) {
-//             board[randomY][randomX] = 1;
-//             condition = false
-//         }
-//     }
-// }
-
-
-
-// function to erase board
-
-// isFlagged() function to right click on tile
-
-// function to left click on tile
-// isRevealed() reveal cell (when cell is revealed, check for mine)
 
 // function to check game win/game lose
 
