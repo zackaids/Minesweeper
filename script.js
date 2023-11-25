@@ -7,16 +7,19 @@ const gameSettings = {
         'gridWidth': 9,
         'gridHeight': 9,
         'maxMines': 10,
+        'totalRevealed': 71,
     },
     'intermediate': {
         'gridWidth': 16,
         'gridHeight': 16,
         'maxMines': 40,
+        'totalRevealed': 216,
     },
-    'advanced': {
+    'expert': {
         'gridWidth': 30,
         'gridHeight': 16,
         'maxMines': 99,
+        'totalRevealed': 381,
     }
 }
 const TILE_STATUSES = {
@@ -55,8 +58,9 @@ function createBoard(gameSettings) {
     }
 
     calculateAdjacentMines(board);
+    let gameOver = false;
 
-    return { board, gameSettings };
+    return { board, gameSettings, gameOver };
 }
 
 
@@ -92,10 +96,17 @@ function renderBoard(board, gameSettings) {
             }
 
             element.addEventListener("click", () => {
+                if (gameOver) {
+                    return;
+                }
                 revealCell(x, y, board);
+
             });
             element.addEventListener("contextmenu", (e) => {
                 e.preventDefault();
+                if (gameOver) {
+                    return;
+                }
                 flagCell(x, y, board);
             })
 
@@ -176,17 +187,16 @@ function revealCell(x, y, board) {
         return;
     }
     if (cell.isMine) {
-        return;
+        gameLose(board);
+        // return;
     }
     cell.isRevealed = true;
-
-
-
     if (cell.adjacentMines === 0) {
         floodFill(x, y, board)
     }
-
-
+    if (!cell.isMine) {
+        checkWin(board);
+    }
     renderBoard(board, currentGameSettings)
 }
 
@@ -199,7 +209,6 @@ function floodFill(x, y, board) {
             const newX = x + dx;
 
             if (newY >= 0 && newY < height && newX >= 0 && newX < width) {
-                // revealCell(newX, newY, board);
                 const neighbor = board[newY][newX];
                 if (!neighbor.isMine && !neighbor.isRevealed) {
                     neighbor.isRevealed = true;
@@ -212,14 +221,59 @@ function floodFill(x, y, board) {
     }
 }
 
+// flat array for fun xD 
+function gameLose(board) {
+    const flatBoard = board.flat();
+    for (let i = 0; i < flatBoard.length; i++) {
+        if (flatBoard[i].isMine && !flatBoard[i].isFlagged) {
+            flatBoard[i].isRevealed = true;
+        }
+    }
+    gameOver = true;
+    document.querySelector(".subtext").innerHTML = "YOU LOSE";
+}
 
-let { board: newBoard, gameSettings: currentGameSettings } = createBoard(gameSettings.beginner);
+function checkWin(board) {
+    const height = board.length;
+    const width = board[0].length;
+    let revealed = 0;
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            if (board[y][x].isRevealed) {
+                revealed++;
+            }
+        }
+    }
+    if (revealed === currentGameSettings.totalRevealed) {
+        document.querySelector(".subtext").innerHTML = "YOU WIN";
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                if (board[y][x].isMine) {
+                    board[y][x].isFlagged = true;
+                }
+            }
+        }
+        gameOver = true;
+    }
+}
+
+
+
+
+let { board: newBoard, gameSettings: currentGameSettings, gameOver } = createBoard(gameSettings.beginner);
 renderBoard(newBoard, currentGameSettings);
+console.log(createBoard(gameSettings.beginner));
 
 
-// function to check game win/game lose
+// function middle click/leftclick || chording
 
 // function to reset game
+
+// function to check mine count
+
+// timer function
+
+// function for mines left
 
 // better UI
 
