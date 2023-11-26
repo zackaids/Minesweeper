@@ -121,6 +121,9 @@ function renderBoard(board, gameSettings) {
     })
     boardElement.style.setProperty('--size-width', gameSettings.gridWidth)
     boardElement.style.setProperty('--size-height', gameSettings.gridHeight)
+    boardElement.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+    })
 
 
     boardElement.style.visibility = "visible"
