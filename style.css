@@ -35,6 +35,10 @@ body {
     margin-bottom: 10px;
 }
 
+.reset-game {
+    cursor: pointer;
+}
+
 .board {
     display: inline-grid;
     padding: 10px;

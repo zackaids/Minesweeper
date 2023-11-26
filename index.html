@@ -2,39 +2,20 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" type="module" defer></script>
+    <script src="script.js" type="module"></script>
+    <title>Minesweeper</title>
 </head>
 
 <body>
     <div>
-        <header id="top">
-            <div class="site-title-nav">
-                <h1 class="site-title">
-                    <a class="play" href="/index.html">minesweeper</a>
-                </h1>
-
-
-                <nav id="topnav" class="hover">
-                    <section>
-                        <a href="/index.html">PLAY</a>
-                        <div class="difficulty">
-                            <div id="beginner">Beginner</div>
-                            <div id="intermediate">Intermediate</div>
-                            <div id="expert">Expert</div>
-                        </div>
-                    </section>
-
-                </nav>
-            </div>
-            <div class="side-buttons">
-            </div>
-        </header>
-    </div>
-    <div>
         <div class="title">Minesweeper</div>
+
         <div class="subtext">
-            Mines Left: <span data-mine-count></span>
+            <div class="mines-left">Mines Left: <span data-mine-count></span></div>
+            <div class="reset-game">Reset Game</div>
         </div>
         <div class="board"></div>
     </div>

@@ -29,13 +29,9 @@ const TILE_STATUSES = {
     FLAGGED: "flagged",
 }
 
-
 const boardElement = document.querySelector('.board')
-const minesLeftText = document.querySelector('[data-mine-count]')
-
-let numberOfMines
-
-
+const minesLeftText = document.querySelector(".mines-left")
+let minesLeft = document.querySelector('[data-mine-count]')
 
 function createBoard(gameSettings) {
     let board = [];
@@ -60,7 +56,13 @@ function createBoard(gameSettings) {
     calculateAdjacentMines(board);
     let gameOver = false;
 
-    return { board, gameSettings, gameOver };
+    minesLeft.textContent = gameSettings.maxMines
+
+    return {
+        board,
+        gameSettings,
+        gameOver
+    };
 }
 
 
@@ -108,6 +110,7 @@ function renderBoard(board, gameSettings) {
                     return;
                 }
                 flagCell(x, y, board);
+                listMinesLeft(board, gameSettings);
             })
 
             boardElement.append(element)
@@ -116,7 +119,7 @@ function renderBoard(board, gameSettings) {
     boardElement.style.setProperty('--size-width', gameSettings.gridWidth)
     boardElement.style.setProperty('--size-height', gameSettings.gridHeight)
 
-    minesLeftText.textContent = numberOfMines
+
     boardElement.style.visibility = "visible"
 }
 
@@ -230,7 +233,7 @@ function gameLose(board) {
         }
     }
     gameOver = true;
-    document.querySelector(".subtext").innerHTML = "YOU LOSE";
+    minesLeftText.innerHTML = "YOU LOSE";
 }
 
 function checkWin(board) {
@@ -245,7 +248,7 @@ function checkWin(board) {
         }
     }
     if (revealed === currentGameSettings.totalRevealed) {
-        document.querySelector(".subtext").innerHTML = "YOU WIN";
+        minesLeftText.innerHTML = "YOU WIN";
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
                 if (board[y][x].isMine) {
@@ -257,23 +260,49 @@ function checkWin(board) {
     }
 }
 
+function listMinesLeft(board, gameSettings) {
+    const height = board.length;
+    const width = board[0].length;
+    let mineCount = 0;
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            if (board[y][x].isFlagged && mineCount < gameSettings.maxMines) {
+                mineCount++
+            }
+        }
+    }
+    minesLeft.textContent = gameSettings.maxMines - mineCount
+}
 
 
 
-let { board: newBoard, gameSettings: currentGameSettings, gameOver } = createBoard(gameSettings.beginner);
+let data = createBoard(gameSettings.beginner);
+
+// global game state variables
+let newBoard = data.board;
+let currentGameSettings = data.gameSettings
+let gameOver = data.gameOver
+
 renderBoard(newBoard, currentGameSettings);
-console.log(createBoard(gameSettings.beginner));
 
+const resetButton = document.querySelector(".reset-game");
+resetButton.addEventListener("click", resetGame);
+function resetGame() {
+    clearBoard();
+    minesLeftText.innerHTML = `Mines Left: <span data-mine-count></span>`;
+    minesLeft = document.querySelector('[data-mine-count]');
+    let data = createBoard(gameSettings.beginner);
+    newBoard = data.board;
+    currentGameSettings = data.gameSettings;
+    gameOver = data.gameOver
+    console.log(minesLeft);
+    renderBoard(newBoard, currentGameSettings);
+
+}
 
 // function middle click/leftclick || chording
 
-// function to reset game
-
-// function to check mine count
-
 // timer function
-
-// function for mines left
 
 // better UI
 
