@@ -109,8 +109,11 @@ function renderBoard(board, gameSettings) {
                 if (gameOver) {
                     return;
                 }
-                flagCell(x, y, board);
-                listMinesLeft(board, gameSettings);
+
+                if (!cell.isRevealed) {
+                    flagCell(x, y, board);
+                    listMinesLeft(board, gameSettings);
+                }
             })
 
             boardElement.append(element)
