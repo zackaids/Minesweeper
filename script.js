@@ -192,7 +192,7 @@ function flagCell(x, y, board) {
 
 function revealCell(x, y, board) {
     const cell = board[y][x];
-    if (cell.isRevealed || cell.isFlagged) {
+    if (cell.isFlagged) {
         return;
     }
     if (cell.isMine) {
@@ -200,6 +200,9 @@ function revealCell(x, y, board) {
         // return;
     }
     cell.isRevealed = true;
+    if (cell.isRevealed) {
+        chordCell(x, y, board);
+    }
     if (cell.adjacentMines === 0) {
         floodFill(x, y, board)
     }
@@ -208,6 +211,37 @@ function revealCell(x, y, board) {
     }
     renderBoard(board, currentGameSettings)
 }
+
+function chordCell(x, y, board) {
+    const height = board.length;
+    const width = board[0].length;
+    let flagged = 0;
+    for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+            const newY = y + dy;
+            const newX = x + dx;
+            if (newY >= 0 && newY < height && newX >= 0 && newX < width) {
+                let neighbor = board[newY][newX];
+                if (neighbor.isFlagged) {
+                    flagged++;
+                }
+            }
+        }
+    }
+    if (flagged === board[y][x].adjacentMines) {
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) { 
+                const newY = y + dy;
+                const newX = x + dx;
+                if (newY >= 0 && newY < height && newX >= 0 && newX < width) {
+                    board[newY][newX].isRevealed = true;
+                }
+            }
+        }
+    }
+}
+
+// when chording, flood fill should be called as well
 
 function floodFill(x, y, board) {
     const height = board.length;
@@ -311,7 +345,6 @@ function resetGame() {
 // timer function
 
 // better UI
-
 
 
 
