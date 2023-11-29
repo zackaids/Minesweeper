@@ -172,22 +172,25 @@ function calculateAdjacentMines(board) {
 
             // the previous for loop iterates through each cell
             // these next for loops iterate through each cell within the one square radius
-            for (let dy = -1; dy <= 1; dy++) {
-                for (let dx = -1; dx <= 1; dx++) {
-                    const newY = y + dy;
-                    const newX = x + dx;
+            if (!board[y][x].isMine) {
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        const newY = y + dy;
+                        const newX = x + dx;
 
-                    // this if statement is needed to make sure that the new x and y
-                    // are not out of bounds 
-                    // (if new x/y=0 or greater than/equal to width/height)
-                    if (newY >= 0 && newY < height && newX >= 0 && newX < width) {
-                        if (board[newY][newX].isMine) {
-                            adjacentMines++;
+                        // this if statement is needed to make sure that the new x and y
+                        // are not out of bounds 
+                        // (if new x/y=0 or greater than/equal to width/height)
+                        if (newY >= 0 && newY < height && newX >= 0 && newX < width) {
+                            if (board[newY][newX].isMine) {
+                                adjacentMines++;
+                            }
                         }
                     }
                 }
+            } else {
+                adjacentMines = -1
             }
-
             board[y][x].adjacentMines = adjacentMines;
         }
     }

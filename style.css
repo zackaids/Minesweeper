@@ -92,6 +92,10 @@ body {
     background-color: #bbb;
     cursor: pointer;
 }
+.board>[data-status="hidden"]:active {
+    background-color: grey;
+    cursor: pointer;
+}
 
 .board>[data-status="mine"] {
     background-color: red;
