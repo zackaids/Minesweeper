@@ -105,6 +105,12 @@ function renderBoard(board, gameSettings) {
                 element.textContent = cell.adjacentMines;
             }
 
+            element.addEventListener("mousedown", (e) => {
+                // preventing autoscroll doesn't work on mouseup????
+                // have to use mousedown + mouseup lol
+                e.preventDefault();
+            });
+
             element.addEventListener("mouseup", (e) => {
                 if (gameOver) {
                     return;
@@ -208,7 +214,6 @@ function revealCell(x, y, board) {
     }
     if (cell.isMine) {
         gameLose(board);
-        // return;
     }
     cell.isRevealed = true;
     if (cell.isRevealed) {
@@ -338,18 +343,27 @@ function listMinesLeft(board, gameSettings) {
     minesLeft.textContent = gameSettings.maxMines - mineCount
 }
 
+[...document.querySelector(".game-mode").children].forEach(element => element.addEventListener("click", chooseGamemode));
 
-
-let data = createBoard(gameSettings.beginner);
+let data;
 
 // global game state variables
-let newBoard = data.board;
-let currentGameSettings = data.gameSettings;
-let gameOver = data.gameOver;
-let timerStarted = data.timerStarted;
-const start = Date.now();
+let newBoard;
+let currentGameSettings;
+let gameOver;
+let timerStarted;
 
-renderBoard(newBoard, currentGameSettings);
+function chooseGamemode(e) {
+    if (e.target.textContent === "Beginner") {
+        currentGameSettings = gameSettings.beginner;
+    } else if (e.target.textContent === "Intermediate") {
+        currentGameSettings  = gameSettings.intermediate;
+    } else if (e.target.textContent === "Expert") {
+        currentGameSettings = gameSettings.expert;
+    }
+
+    resetGame();
+}
 
 const resetButton = document.querySelector(".reset-game");
 resetButton.addEventListener("click", resetGame);
@@ -359,7 +373,7 @@ function resetGame() {
     minesLeft = document.querySelector('[data-mine-count]');
     time = 0;
     clearInterval(timer);
-    let data = createBoard(gameSettings.beginner);
+    let data = createBoard(currentGameSettings);
     newBoard = data.board;
     currentGameSettings = data.gameSettings;
     gameOver = data.gameOver;
@@ -367,10 +381,3 @@ function resetGame() {
     renderBoard(newBoard, currentGameSettings);
 
 }
-
-// game mode change option
-
-// better UI
-
-
-

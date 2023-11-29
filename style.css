@@ -27,16 +27,45 @@ body {
 
 .title {
     margin: 20px;
+    text-align: center;
 }
 
 .subtext {
     color: #CCC;
     font-size: 1.54rem;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
+.reset-game, .mines-left, .time-left {
+    padding: 5px;
+}
 .reset-game {
+    border: 1px black solid;
     cursor: pointer;
+}
+
+.game-mode {
+    color: #CCC;
+    font-size: 1.54rem;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content:center;
+    gap: 20px;
+}
+
+.beginner, .intermediate, .expert {
+    border: 1px black solid;
+    padding: 5px;
+}
+.beginner:hover,
+.intermediate:hover,
+.expert:hover,
+.reset-game:hover {
+    background-color: rgb(65, 65, 65);
+    cursor:pointer;
 }
 
 .board {
