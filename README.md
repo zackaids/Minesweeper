@@ -1,3 +1,18 @@
-# minesweeper-single-player
+# MineSweeper
+This is a personal project based on a game Minesweeper originally developed by Robert Donner and Curt Johnson for Microsoft. It is my own version of Minesweeper that follows the same rules and was developed fully using JavaScript, HTML and CSS. Utilizes several Data Structures & Algorithms, as well as Web Design.
 
-https://minesweeper-game-8ur.pages.dev/
+**Link to demo:** https://minesweeper-game-8ur.pages.dev/
+
+## How It's Made:
+
+**Tech used:** HTML, CSS, JavaScript, CloudFlare
+
+Project was built using HTML, CSS, and JavaScript. It first implemented HTML and CSS in order to design the simple website design. The design included a Minesweeper board, Time elapsed, Gamemode choices, and a Reset button. In JavaScript, I initiated the main board to be a 2-Dimensional Array of Objects. Each object is representing a cell which has only four characteristics: Whether it is a mine, is flagged, is revealed, and how many mines it has around. Next stage was adding the mines on the board, which was achievable through function Math.floor() and Math.random(), as it generated a random number and multiplied it by the array height and width, and rounded it to a largest integer. Then it was utilized in the main function to make the max amount of mines allowed per gamemode. Next stage was rendering the board to HTML, which also included adding ability to click on the board and interact with it using event listeners. Next step was to calculate each cell that was not a mine, and find the number of adjacent cells that it has. This was achievable by first creating a double for loop to iterate through each cell object on the board. When looking at a single cell that is not a mine, the program checked every direction in its xy-direction, and if there was a mine near it, it incremented a counter on the amount of adjacent mines it has and applied that number to each cell that was not a mine. The next and main challenge that I had to face was developing a way to clear out areas of cells without any mines around them. In order to fix that, I used a Depth-First-Searching algorithm called Flood Fill. The algorithm searches for a node's neighbors thoroughly before backtracking, and in the case of my code, the algorithm recursively calls itself back as soon as it finds a cell with the adjacent mine amount equaling to 0. Another issue I stumbled upon was the implementation of cell chording, which is defined as "When an uncovered square with a number has exactly the correct number of adjacent squares flagged, performing a click with both mouse buttons on it will uncover all unmarked squares." This required me to create several conditions, especially one that counts the number of flagged cells there are around the revealed cell, and if it equaled to the number of adjacent cells, it revealed all the neighboring cells. The rest of the coding process dwells into making the code work around the functions.
+
+## Optimizations
+
+This was one of the first web application projects I've written, which still has a lot of room for further optimization. During the process, the usage of a 2-dimensional array allowed me to better understand how to code applications such as Minesweeper, which require lots of computation and preparation before coding it. Usage of a Depth-First-Search algorithm and its recursive nature allowed me to simplify the algorithm and make it work.
+
+## Lessons Learned:
+
+I learned how to utilize 2-dimensional arrays, as well as data structures such as objects, in order to keep status of every cell. I also learned how to utilize Depth-First-Search algorithms and how to implement them in a real project. This project also jumpstarted my interest in JavaScript and other web frameworks to continue learning them more.
